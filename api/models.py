@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import FileExtensionValidator
@@ -15,6 +17,7 @@ class Users(AbstractUser):
 
 
 class Videos(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     video = models.FileField(
         upload_to="video_storage",
         null=True,

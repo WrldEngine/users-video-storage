@@ -97,11 +97,11 @@ def upload_video(request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def get_videos(request, pk=None):
+def get_videos(request, id=None):
 
-    if pk is not None:
+    if id is not None:
         try:
-            video = get_object_or_404(Videos, pk=pk)
+            video = get_object_or_404(Videos, id=id)
 
             if request.user.is_authenticated:
                 video.views_accounts.add(request.user)
@@ -114,7 +114,7 @@ def get_videos(request, pk=None):
         except Videos.DoesNotExist:
             raise APIException("Current Video Does Not Exist")
 
-    videos = Videos.objects.all()
+    videos = Videos.objects.all().order_by('-views')
 
     serializer = VideoPostSerializer(videos, many=True)
     return Response(serializer.data)
@@ -122,8 +122,8 @@ def get_videos(request, pk=None):
 
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
-def like_video(request, pk):
-    video = get_object_or_404(Videos, pk=pk)
+def like_video(request, id):
+    video = get_object_or_404(Videos, id=id)
 
     if request.user in video.likes.all():
         video.likes.remove(request.user)
