@@ -44,6 +44,7 @@ class Videos(models.Model):
     class Meta:
         verbose_name = "Video"
 
+
 class Comments(models.Model):
     author = models.ForeignKey(Users, on_delete=models.CASCADE)
     content = models.TextField()
@@ -55,4 +56,3 @@ class Comments(models.Model):
 
     class Meta:
         verbose_name = "Comment"
-

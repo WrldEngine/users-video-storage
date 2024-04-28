@@ -10,5 +10,5 @@ def send_verification_message(message, email):
     subject = "Verify Email"
 
     send_mail(subject, strip_tags(message))
-    
+
     return "Sent"

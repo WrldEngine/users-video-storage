@@ -34,16 +34,16 @@ def register_user(request):
 @permission_classes([IsAuthenticated])
 def verify_email(request):
     current_site = get_current_site(request)
-    
+
     message = render_to_string(
-        'verify_email.html', 
+        "verify_email.html",
         {
-            'request': request,
-            'user': request.user,
-            'domain': current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(request.user.pk)),
-            'token': account_activation_token.make_token(request.user),
-        }
+            "request": request,
+            "user": request.user,
+            "domain": current_site.domain,
+            "uid": urlsafe_base64_encode(force_bytes(request.user.pk)),
+            "token": account_activation_token.make_token(request.user),
+        },
     )
 
     send_verification_message.delay(message, request.user.email)
@@ -114,7 +114,7 @@ def get_videos(request, id=None):
         except Videos.DoesNotExist:
             raise APIException("Current Video Does Not Exist")
 
-    videos = Videos.objects.all().order_by('-views')
+    videos = Videos.objects.all().order_by("-views")
 
     serializer = VideoPostSerializer(videos, many=True)
     return Response(serializer.data)
