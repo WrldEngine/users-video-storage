@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 const current_endpoint = `${import.meta.env.VITE_API_URL}login/`
 
 export default function LoginForm() {
@@ -44,7 +49,7 @@ export default function LoginForm() {
                 const response = await axios.post(current_endpoint, formData);
                 localStorage.setItem('access', response.data.access);
 
-                navigate('/');
+                navigate('/profile');
 
             } catch(error) {
                 errors.auth = "Неверное имя пользователя или пароль"
@@ -54,25 +59,42 @@ export default function LoginForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            {formData.errors.auth && (
-                <p style={{ color: "red" }}>{formData.errors.auth}</p>
-            )}
-            <label>
-                Username:
-                <input type='text' name='username' value={formData.username} onChange={handleChange} />
-                {formData.errors.username && (
-                    <p style={{ color: "red" }}>{formData.errors.username}</p>
+        <div className="container col-sm-3" data-bs-theme="dark">
+            <h2 className='text-warning text-center mb-4'>Login</h2>
+
+            <Form onSubmit={handleSubmit}>
+                {formData.errors.auth && (
+                    <p className="text-danger" style={{ color: 'red' }}>{formData.errors.auth}</p>
                 )}
-            </label>
-            <label>
-                Password:
-                <input type='password' name='password' value={formData.password} onChange={handleChange} />
-                {formData.errors.password && (
-                    <p style={{ color: "red" }}>{formData.errors.password}</p>
-                )}
-            </label>
-            <input type="submit" value="Submit" />
-        </form>
+                <Row className="mb-3">
+
+                    <Form.Group as={Col} controlId="formUsername">
+                        <Form.Label className='text-info'>Username</Form.Label>
+                        <Form.Control className="form-control-dark" type="text" name="username" value={formData.username} onChange={handleChange} />
+                        {formData.errors.username && (
+                            <p className="text-danger">{formData.errors.username}</p>
+                        )}
+                    </Form.Group>
+                
+                </Row>
+
+                <Row className="mb-3">
+                    
+                    <Form.Group as={Col} controlId="formPassword">
+                        <Form.Label className='text-info'>Password</Form.Label>
+                        <Form.Control className="form-control-dark" type="password" name="password" value={formData.password} onChange={handleChange} />
+                        {formData.errors.password && (
+                            <p className="text-danger">{formData.errors.password}</p>
+                        )}
+                    </Form.Group>
+
+                </Row>
+                <div className="text-center">
+                    <Button variant="warning" type="submit">
+                        Submit
+                    </Button>
+                </div>
+            </Form>
+        </div>
     );
 }

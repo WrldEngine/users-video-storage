@@ -26,8 +26,8 @@ user_patterns = [
 
 video_patterns = [
     path("", get_videos, name="videos_list"),
-    path("<int:pk>/", get_videos, name="current_video"),
-    path("<int:pk>/like/", like_video, name="like_video"),
+    path("<uuid:id>/", get_videos, name="current_video"),
+    path("<uuid:id>/like/", like_video, name="like_video"),
 ]
 
 urlpatterns = [

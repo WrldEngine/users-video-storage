@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { Form, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const current_endpoint = `${import.meta.env.VITE_API_URL}signup/`
 
@@ -30,6 +35,10 @@ export default function SignupForm() {
 
         if (!formData.last_name) {
             errors.last_name = "Фамилия не указана";
+        }
+
+        if (!formData.email) {
+            errors.email = "Почта не указана"
         }
 
         if (!formData.password) {
@@ -63,43 +72,79 @@ export default function SignupForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            {formData.errors.auth && (
-                <p style={{ color: "red" }}>{formData.errors.auth}</p>
-            )}
-            <label>
-                Username:
-                <input type='text' name='username' value={formData.username} onChange={handleChange} />
-                {formData.errors.username && (
-                    <p style={{ color: "red" }}>{formData.errors.username}</p>
+        <div className="container col-sm-3" data-bs-theme="dark">
+            <h2 className='text-warning text-center mb-4'>Sign Up</h2>
+
+            <Form onSubmit={handleSubmit}>
+                {formData.errors.auth && (
+                    <p className="text-danger">{formData.errors.auth}</p>
                 )}
-            </label>
-            <label>
-                First Name:
-                <input type='text' name='first_name' value={formData.first_name} onChange={handleChange} />
-                {formData.errors.first_name && (
-                    <p style={{ color: "red" }}>{formData.errors.first_name}</p>
-                )}
-            </label>
-            <label>
-                Last Name:
-                <input type='text' name='last_name' value={formData.last_name} onChange={handleChange} />
-                {formData.errors.last_name && (
-                    <p style={{ color: "red" }}>{formData.errors.last_name}</p>
-                )}
-            </label>
-            <label>
-                Email:
-                <input type='email' name='email' value={formData.email} onChange={handleChange} />
-            </label>
-            <label>
-                Password:
-                <input type='password' name='password' value={formData.password} onChange={handleChange} />
-                {formData.errors.password && (
-                    <p style={{ color: "red" }}>{formData.errors.password}</p>
-                )}
-            </label>
-            <input type="submit" value="Submit" />
-        </form>
+
+                <Row className="mb-3">
+
+                    <Form.Group as={Col} controlId="formFname">
+                        <Form.Label className='text-info'>First Name</Form.Label>
+                        <Form.Control type="text" name="first_name" value={formData.first_name} onChange={handleChange} />
+                        {formData.errors.first_name && (
+                            <p className="text-danger">{formData.errors.first_name}</p>
+                        )}
+                    </Form.Group>
+
+                </Row>
+
+                <Row className="mb-3">
+
+                    <Form.Group as={Col} controlId="formLname">
+                        <Form.Label className='text-info'>Last Name</Form.Label>
+                        <Form.Control type="text" name="last_name" value={formData.last_name} onChange={handleChange} />
+                        {formData.errors.last_name && (
+                            <p className="text-danger">{formData.errors.last_name}</p>
+                        )}
+                    </Form.Group>
+
+                </Row>
+
+                <Row className="mb-3">
+
+                    <Form.Group as={Col} controlId="formUsername">
+                        <Form.Label className='text-info'>Username</Form.Label>
+                        <Form.Control type="text" name="username" value={formData.username} onChange={handleChange} />
+                        {formData.errors.username && (
+                            <p className="text-danger">{formData.errors.username}</p>
+                        )}
+                    </Form.Group>
+
+                </Row>
+
+                <Row className="mb-3">
+
+                    <Form.Group as={Col} controlId="formEmail">
+                        <Form.Label className='text-info'>Email</Form.Label>
+                        <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} />
+                        {formData.errors.email && (
+                            <p className="text-danger">{formData.errors.email}</p>
+                        )}
+                    </Form.Group>
+
+                </Row>
+
+                <Row className="mb-3">
+
+                    <Form.Group as={Col} controlId="formPassword">
+                        <Form.Label className='text-info'>Password</Form.Label>
+                        <Form.Control type="password" name="password" value={formData.password} onChange={handleChange} />
+                        {formData.errors.password && (
+                            <p className="text-danger">{formData.errors.password}</p>
+                        )}
+                    </Form.Group>
+
+                </Row>
+                <div className="text-center">
+                    <Button variant="warning" type="submit">
+                        Submit
+                    </Button>
+                </div>
+            </Form>
+        </div>
     );
 }

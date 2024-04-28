@@ -4,4 +4,4 @@ from django.apps import AppConfig
 class ApiConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "api"
-    CELERY_APP = 'celery_tasks'
+    CELERY_APP = "celery_tasks"

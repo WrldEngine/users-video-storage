@@ -76,3 +76,6 @@ celerybeat.pid
 
 # Environments
 .env
+
+# Media
+video_storage/
