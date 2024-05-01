@@ -1,9 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import Alert from 'react-bootstrap/Alert';
 
 import UsersView from './endpoints/users'
 import SignupForm from './endpoints/signup'
@@ -28,30 +28,30 @@ function App() {
 
   return (
     <Router>
-      <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
+    <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
       <Container>
         <Navbar.Brand href="/" className='text-warning'>Breathless vids</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          {!isAuthenticated && (
-            <Nav className="me-auto">
-              <Nav.Link href="/login">Войти</Nav.Link>
-              <Nav.Link href="/signup">Зарегистрироватся</Nav.Link>
-            </Nav>
-          )}
-          {isAuthenticated && (
-            <Nav className="me-auto">
-              <Nav.Link href="/profile">Профиль</Nav.Link>
-              <Nav.Link href="/logout">Выйти</Nav.Link>
-            </Nav>
-          )}
-        </Navbar.Collapse>
+          {isAuthenticated ? (
+              <Nav className="me-auto">
+                <Nav.Link href="/profile">Профиль</Nav.Link>
+                <Nav.Link href="/logout">Выйти</Nav.Link>
+              </Nav>
+            ) : (
+              <Nav className="me-auto">
+                <Nav.Link href="/login">Войти</Nav.Link>
+                <Nav.Link href="/signup">Зарегистрироватся</Nav.Link>
+              </Nav>
+            )
+          }
+      </Navbar.Collapse>
       </Container>
     </Navbar>
         <Routes>
           <Route path='/' element={<HomeView />} />
           <Route path='/users' element={<UsersView />} />
-          <Route path='/users/:id' element={<ProfileView />} />
+          <Route path='/users/:pk' element={<ProfileView />} />
           <Route path='/videos/:id' element={<VideoView />} />
           <Route path='/signup' element={<SignupForm />} />
           <Route path='/login' element={<LoginForm />} />
