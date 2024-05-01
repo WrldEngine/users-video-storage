@@ -47,6 +47,7 @@ class Videos(models.Model):
 
 class Comments(models.Model):
     author = models.ForeignKey(Users, on_delete=models.CASCADE)
+    video = models.ForeignKey(Videos, on_delete=models.CASCADE)
     content = models.TextField()
     likes = models.ManyToManyField(Users, related_name="liked_comments", blank=True)
     date = models.DateTimeField(auto_now_add=True)

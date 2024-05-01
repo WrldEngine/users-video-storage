@@ -1,6 +1,10 @@
-from .serializers import UserSerializer, UserShowSerializer, VideoPostSerializer
-from .models import Users, Videos
-from .permissions import IsOwner
+from .serializers import (
+    UserSerializer,
+    VideoPostSerializer,
+    CommentsSerializer,
+)
+from .models import Users, Videos, Comments
+from .permissions import IsOwner, ReadOnly
 from .tasks import send_verification_message
 from .tokens import account_activation_token
 
@@ -57,14 +61,14 @@ def get_user(request, pk=None):
     if pk is not None:
         try:
             user = Users.objects.get(pk=pk)
-            serializer = UserShowSerializer(user)
+            serializer = UserSerializer(user)
 
         except Users.DoesNotExist:
             raise APIException("Current User Does Not Exist")
 
     else:
         user = Users.objects.all()
-        serializer = UserShowSerializer(user, many=True)
+        serializer = UserSerializer(user, many=True)
 
     return Response(serializer.data)
 
@@ -83,13 +87,10 @@ def get_profile_info(request):
 @api_view(["POST"])
 @permission_classes([IsAdminUser])
 def upload_video(request):
-    request_data = request.data.copy()
-    request_data["author"] = request.user.id
-
-    serializer = VideoPostSerializer(data=request_data)
+    serializer = VideoPostSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save()
+        serializer.save(author=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -102,14 +103,23 @@ def get_videos(request, id=None):
     if id is not None:
         try:
             video = get_object_or_404(Videos, id=id)
+            liked = False
 
             if request.user.is_authenticated:
                 video.views_accounts.add(request.user)
 
+                if request.user in video.likes.all():
+                    liked = True
+
             video.update_views()
             serializer = VideoPostSerializer(video)
 
-            return Response(serializer.data)
+            return Response(
+                {
+                    "detail": serializer.data,
+                    "liked": liked,
+                }
+            )
 
         except Videos.DoesNotExist:
             raise APIException("Current Video Does Not Exist")
@@ -134,3 +144,22 @@ def like_video(request, id):
 
     serializer = VideoPostSerializer(video)
     return Response({"detail": serializer.data, "liked": liked})
+
+
+class CommentsDetail(APIView):
+    permission_classes = [IsAuthenticated | ReadOnly]
+
+    def get(self, request, video_id):
+        video_comment = Comments.objects.filter(video=video_id)
+        serializer = CommentsSerializer(video_comment, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request, video_id):
+        serializer = CommentsSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(author=request.user, video=video_id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

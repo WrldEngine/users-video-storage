@@ -16,6 +16,7 @@ from api.views import (
     get_profile_info,
     like_video,
     verify_email,
+    CommentsDetail,
 )
 
 user_patterns = [
@@ -28,6 +29,7 @@ video_patterns = [
     path("", get_videos, name="videos_list"),
     path("<uuid:id>/", get_videos, name="current_video"),
     path("<uuid:id>/like/", like_video, name="like_video"),
+    path("<uuid:video_id>/comment/", CommentsDetail.as_view(), name="comments_section"),
 ]
 
 urlpatterns = [
