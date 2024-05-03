@@ -25,7 +25,7 @@ class VideosAdmin(admin.ModelAdmin):
     search_fields = ("title",)
 
 @admin.register(Comments)
-class VideosAdmin(admin.ModelAdmin):
+class CommentsAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "content",

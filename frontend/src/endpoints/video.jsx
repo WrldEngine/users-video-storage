@@ -8,6 +8,7 @@ import ReactPlayer from 'react-player';
 import Badge from 'react-bootstrap/Badge';
 
 import CommentsComponent from './components/comments'
+import CommentForm from './components/form_comments';
 
 export default function VideoView() {
     const { id } = useParams();
@@ -93,6 +94,7 @@ export default function VideoView() {
                     </div>
                 )}
             </div>
+            <CommentForm video_id={id} />
             <CommentsComponent video_id={id} />
         </div>
     );

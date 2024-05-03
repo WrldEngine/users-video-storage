@@ -11,7 +11,6 @@ from rest_framework_simplejwt.views import (
 from api.views import (
     register_user,
     get_user,
-    upload_video,
     get_videos,
     get_profile_info,
     like_video,
@@ -38,7 +37,6 @@ urlpatterns = [
     path("api/login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/users/", include(user_patterns)),
     path("api/signup/", register_user, name="signup"),
-    path("api/upload_video/", upload_video, name="video"),
     path("api/videos/", include(video_patterns)),
     path("verify/", verify_email, name="verify_email"),
     re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
