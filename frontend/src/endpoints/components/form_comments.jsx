@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-const current_endpoint = `${import.meta.env.VITE_API_URL}login/`
+export default function CommentForm({ video_id }) {
+    const current_endpoint = `${import.meta.env.VITE_API_URL}videos/${video_id}/comment/`
+    const current_page = `${window.location.protocol}//${window.location.host}/video/${video_id}`;
 
-export default function LoginForm() {
-    const navigate = useNavigate();
+    console.log(current_page);
 
     const [formData, setFormData] = useState({
         content: "",
@@ -26,12 +26,8 @@ export default function LoginForm() {
     const validateForm = () => {
         const errors = {};
 
-        if (!formData.username) {
-            errors.username = "Имя пользователя не указано";
-        }
-
-        if (!formData.password) {
-            errors.password = "Пароль пользователя не указан";
+        if (!formData.content) {
+            errors.content = "Имя пользователя не указано";
         }
 
         setFormData((prevState) => ({ ...prevState, errors }));
@@ -41,58 +37,45 @@ export default function LoginForm() {
 
     const handleSubmit = async(event) => {
         const errors = {};
-        event.preventDefault();
 
         if (validateForm()) {
             try {
-                const response = await axios.post(current_endpoint, formData);
-                localStorage.setItem('access', response.data.access);
-
-                navigate('/profile');
+                const response = await axios.post(current_endpoint, formData, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    }
+                });
 
             } catch(error) {
-                errors.auth = "Неверное имя пользователя или пароль"
+                errors.auth = "Вы не авторизованы"
                 setFormData((prevState) => ({ ...prevState, errors }));
             }
         }
+
+        event.preventDefault();
     };
 
     return (
-        <div className="container col-sm-3" data-bs-theme="dark">
-            <h2 className='text-warning text-center mb-4'>Login</h2>
+        <div className="container" data-bs-theme="dark">
+            <h2 className='text-warning mb-4'>Comment</h2>
 
-            <Form onSubmit={handleSubmit}>
+            <Form action={current_page} onSubmit={handleSubmit} method='POST'>
                 {formData.errors.auth && (
                     <p className="text-danger" style={{ color: 'red' }}>{formData.errors.auth}</p>
                 )}
                 <Row className="mb-3">
 
-                    <Form.Group as={Col} controlId="formUsername">
-                        <Form.Label className='text-info'>Username</Form.Label>
-                        <Form.Control className="form-control-dark" type="text" name="username" value={formData.username} onChange={handleChange} />
-                        {formData.errors.username && (
-                            <p className="text-danger">{formData.errors.username}</p>
+                    <Form.Group as={Col} controlId="formContent">
+                        <Form.Control className="form-control-dark" type="text" name="content" value={formData.content} onChange={handleChange} />
+                        {formData.errors.content && (
+                            <p className="text-danger">{formData.errors.content}</p>
                         )}
                     </Form.Group>
                 
                 </Row>
-
-                <Row className="mb-3">
-                    
-                    <Form.Group as={Col} controlId="formPassword">
-                        <Form.Label className='text-info'>Password</Form.Label>
-                        <Form.Control className="form-control-dark" type="password" name="password" value={formData.password} onChange={handleChange} />
-                        {formData.errors.password && (
-                            <p className="text-danger">{formData.errors.password}</p>
-                        )}
-                    </Form.Group>
-
-                </Row>
-                <div className="text-center">
-                    <Button variant="warning" type="submit">
-                        Submit
-                    </Button>
-                </div>
+                <Button variant="warning" type="submit">
+                    Submit
+                </Button>
             </Form>
         </div>
     );

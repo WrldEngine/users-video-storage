@@ -1,7 +1,9 @@
 from .serializers import (
     UserSerializer,
+    UserViewSerializer,
     VideoPostSerializer,
     CommentsSerializer,
+    CommentsViewSerializer,
 )
 from .models import Users, Videos, Comments
 from .permissions import IsOwner, ReadOnly
@@ -76,25 +78,8 @@ def get_user(request, pk=None):
 @api_view(["GET"])
 @permission_classes([IsOwner])
 def get_profile_info(request):
-    try:
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
-
-    except:
-        raise APIException("You dont have permissions to access this resource")
-
-
-@api_view(["POST"])
-@permission_classes([IsAdminUser])
-def upload_video(request):
-    serializer = VideoPostSerializer(data=request.data)
-
-    if serializer.is_valid():
-        serializer.save(author=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
@@ -151,15 +136,20 @@ class CommentsDetail(APIView):
 
     def get(self, request, video_id):
         video_comment = Comments.objects.filter(video=video_id)
-        serializer = CommentsSerializer(video_comment, many=True)
+        serializer = CommentsViewSerializer(video_comment, many=True)
 
         return Response(serializer.data)
 
     def post(self, request, video_id):
-        serializer = CommentsSerializer(data=request.data)
+        comment_data = request.data.copy()
+        comment_data['video'] = video_id
+        comment_data['author'] = request.user.id
+
+        serializer = CommentsSerializer(data=comment_data)
 
         if serializer.is_valid():
-            serializer.save(author=request.user, video=video_id)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
