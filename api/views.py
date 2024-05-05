@@ -76,10 +76,20 @@ def get_user(request, pk=None):
 
 
 @api_view(["GET"])
-@permission_classes([IsOwner])
+@permission_classes([IsAuthenticated, IsOwner])
 def get_profile_info(request):
-    serializer = UserSerializer(request.user)
-    return Response(serializer.data)
+    video_queryset = Videos.objects.filter(likes__in=[request.user])
+
+    user_profile_serializer = UserSerializer(request.user)
+    liked_video_serializer = VideoPostSerializer(video_queryset, many=True)
+
+    return Response(
+        {
+            "profile": user_profile_serializer.data,
+            "liked_videos": liked_video_serializer.data,
+        }
+    )
+
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
@@ -123,6 +133,7 @@ def like_video(request, id):
     if request.user in video.likes.all():
         video.likes.remove(request.user)
         liked = False
+
     else:
         video.likes.add(request.user)
         liked = True
@@ -135,15 +146,15 @@ class CommentsDetail(APIView):
     permission_classes = [IsAuthenticated | ReadOnly]
 
     def get(self, request, video_id):
-        video_comment = Comments.objects.filter(video=video_id)
+        video_comment = Comments.objects.filter(video=video_id).order_by("-date")
         serializer = CommentsViewSerializer(video_comment, many=True)
 
         return Response(serializer.data)
 
     def post(self, request, video_id):
         comment_data = request.data.copy()
-        comment_data['video'] = video_id
-        comment_data['author'] = request.user.id
+        comment_data["video"] = video_id
+        comment_data["author"] = request.user.id
 
         serializer = CommentsSerializer(data=comment_data)
 
@@ -151,5 +162,4 @@ class CommentsDetail(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        print(serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

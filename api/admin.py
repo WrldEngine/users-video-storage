@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Users, Videos, Comments
 
+
 @admin.register(Users)
 class UsersAdmin(admin.ModelAdmin):
     list_display = [
@@ -13,6 +14,7 @@ class UsersAdmin(admin.ModelAdmin):
 
     search_fields = ("username",)
 
+
 @admin.register(Videos)
 class VideosAdmin(admin.ModelAdmin):
     list_display = [
@@ -23,6 +25,7 @@ class VideosAdmin(admin.ModelAdmin):
     ]
 
     search_fields = ("title",)
+
 
 @admin.register(Comments)
 class CommentsAdmin(admin.ModelAdmin):

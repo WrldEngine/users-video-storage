@@ -1,11 +1,16 @@
-import Alert from 'react-bootstrap/Alert';
+import React, { useState, useEffect } from "react";
+import Alert from "react-bootstrap/Alert";
 
 export default function BannerAlert() {
-    const [show, setShow] = useState(true);
-    
-    return (
+  const [show, setShow] = useState(true);
+
+  return (
+    <div className="container pt-4" data-bs-theme="dark">
+      {show && (
         <Alert variant="warning" onClose={() => setShow(false)} dismissible>
-            Your ad would be here, but you dont have money
+          Твоя реклама может быть здесь, но у тебя нет денег
         </Alert>
-    )
+      )}
+    </div>
+  );
 }
