@@ -13,7 +13,7 @@ export default function ProfileView() {
       );
       setUserData(response.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Auth error");
     }
   };
 
