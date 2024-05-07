@@ -70,7 +70,7 @@ export default function VideoView() {
     <div>
       <div className="container" data-bs-theme="dark">
         {video && (
-          <div className="row justify-content-center pt-5">
+          <div className="row justify-content-center pt-7">
             <div className="col-sm-7 p-3">
               <Card border="warning">
                 <ReactPlayer
