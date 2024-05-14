@@ -41,8 +41,6 @@ npm run dev -- --host 0.0.0.0
 * Redis
 ## Screenshots
 
-![img](/scrnshot/p1.PNG)
-![img](/scrnshot/p2.PNG)
-![img](/scrnshot/p3.PNG)
-![img](/scrnshot/p4.PNG)
-![img](/scrnshot/p5.PNG)
+<img src='/scrnshot/p1.PNG' width=240><img src='/scrnshot/p2.PNG' width=240><img src='/scrnshot/p3.PNG' width=240>
+<img src='/scrnshot/p4.png'>
+<img src='/scrnshot/p5.png'>
