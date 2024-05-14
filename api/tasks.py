@@ -8,6 +8,6 @@ from rest_framework.response import Response
 @shared_task
 def send_verification_message(message, email):
     subject = "Verify Email"
-    send_mail(subject, strip_tags(message))
+    send_mail(subject, strip_tags(message), "Site_Administration", [email], html_message=message)
 
     return "Sent"
